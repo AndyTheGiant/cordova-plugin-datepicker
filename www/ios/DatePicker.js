@@ -30,6 +30,12 @@ DatePicker.prototype.show = function(options, cb) {
     };
 
     var formatDate = function(date){
+
+      console.log("checking date:: " + typeof(date));
+      if (date.getFullYear == undefined){
+        date = new Date();
+      }
+      //if (typeof date.getFullYear !== 'function'){return "";}
       date = date.getFullYear() 
             + "-" 
             + padDate(date.getMonth()+1) 

@@ -16,6 +16,9 @@ function DatePicker() {
 DatePicker.prototype.show = function(options, cb) {
   
 	if (options.date) {
+		if (options.date.getFullYear == undefined){
+			options.date = new Date();
+		}
 		options.date = (options.date.getMonth() + 1) + "/" + 
 					   (options.date.getDate()) + "/" + 
 					   (options.date.getFullYear()) + "/" + 
