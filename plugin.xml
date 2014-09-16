@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-           id="za.co.informationlogisitics.phonegap.datepicker"
+           id="com.phonegap.datepicker"
       version="0.3.0">
 
     <name>Datepicker</name>
@@ -18,7 +18,7 @@
         </config-file>
 		
         <js-module src="www/android/DatePicker.js" name="DatePicker">
-            <clobbers target="datePicker" />
+            <clobbers target="cordova.plugins.datePicker" />
         </js-module>
 
         <source-file src="src/android/DatePickerPlugin.java" target-dir="src/com/plugin/datepicker" />
@@ -34,7 +34,7 @@
         </config-file>
 
         <js-module src="www/ios/DatePicker.js" name="DatePicker">
-            <clobbers target="datePicker" />
+            <clobbers target="cordova.plugins.datePicker" />
         </js-module>
 
 	    <header-file src="src/ios/DatePicker.h" />

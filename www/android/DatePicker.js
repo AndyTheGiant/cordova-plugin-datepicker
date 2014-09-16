@@ -1,65 +1,47 @@
 /**
  * Phonegap DatePicker Plugin Copyright (c) Greg Allen 2011 MIT Licensed
  * Reused and ported to Android plugin by Daniel van 't Oever
+ * Callback fix and Cordova/Phonegap 3.5 optimization by Andy Lindemann
  */
 
-/**
- * Constructor
- */
-function DatePicker() {
-  //this._callback;
-}
+var exec = require('cordova/exec');
 
-/**
- * show - true to show the ad, false to hide the ad
- */
-DatePicker.prototype.show = function(options, cb) {
-  
-	if (options.date) {
-		if (options.date.getFullYear == undefined){
-			options.date = new Date();
-		}
-		options.date = (options.date.getMonth() + 1) + "/" + 
-					   (options.date.getDate()) + "/" + 
-					   (options.date.getFullYear()) + "/" + 
-					   (options.date.getHours()) + "/" + 
-					   (options.date.getMinutes());
-	}
+module.exports = {
+    show: function (options, successCB, errorCB) {
+        options = options || {};
 
-	var defaults = {
-		mode : 'date',
-		date : '',
-		minDate: 0,
-		maxDate: 0
-	};
+        if (!options.date || typeof options.date.getDate === 'undefined') {
+            options.date = new Date();
+        }
 
-	for (var key in defaults) {
-		if (typeof options[key] !== "undefined") {
-			defaults[key] = options[key];
-		}
-	}
+        var d = options.date;
+        options.date = [d.getMonth() + 1, d.getDate(), d.getFullYear(), d.getHours(), d.getMinutes()].join('/');
 
-	//this._callback = cb;
 
-	var callback = function(message) {
-		cb(new Date(message));
-	}
-  
-	cordova.exec(callback, 
-		null, 
-		"DatePickerPlugin", 
-		defaults.mode,
-		[defaults]
-	);
+        var defaults = {
+            mode: 'date',
+            date: '',
+            minDate: 0,
+            maxDate: 0,
+            okButtonLabel: 'Done',
+            cancelButtonLabel: 'Cancel',
+            modalLabel: 'Set time'
+        };
+
+        for (var key in defaults) {
+            if (defaults.hasOwnProperty(key) && typeof options[key] !== 'undefined') {
+                defaults[key] = options[key];
+            }
+        }
+
+        function cb(res) {
+            if (res === 'cancel') {
+               errorCB && errorCB(res);
+            } else {
+                successCB(new Date(res));
+            }
+        }
+
+        exec(cb, errorCB, 'DatePickerPlugin', defaults.mode, [defaults]);
+    }
 };
-
-var datePicker = new DatePicker();
-module.exports = datePicker;
-
-// Make plugin work under window.plugins
-if (!window.plugins) {
-    window.plugins = {};
-}
-if (!window.plugins.datePicker) {
-    window.plugins.datePicker = datePicker;
-}
